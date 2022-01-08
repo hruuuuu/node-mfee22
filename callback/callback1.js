@@ -3,6 +3,7 @@ let doWork = function (job, timer, callback) {
     callback(null, `完成工作 ${job}`);
   }, timer);
 };
+//刷完牙後2秒印出來
 let dt = new Date();
 console.log(`start ${dt.toISOString()}`);
 doWork('刷牙', 2000, (err, result) => {

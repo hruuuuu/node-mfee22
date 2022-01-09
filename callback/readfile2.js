@@ -1,6 +1,6 @@
 const { readFile } = require('fs');
 
-//data用帶入的function版本
+//data帶入function版本
 // let data = 'test.txt';
 // let readFilePromise = (data) => {
 //   return new Promise((resolve, reject) => {

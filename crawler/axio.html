@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>axio</title>
+</head>
+
+<body>
+  <div id="data">
+    <h1>orderNo: <span id="orderNo"></span></h1>
+    <table>
+      <thead>
+        <tr>
+          <th>productId</th>
+          <th>count</th>
+          <th>price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h1>amount: <span id="amount"></span></h1>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"
+    integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    //證交所: blocked by CORS policy
+    (async () => {
+      try {
+        const response = await axios.get('http://34.221.173.92:3000/data');
+        const data = response.data;
+        console.log(data);
+        const tbody = document.querySelector("tbody");
+        const orderNo = document.querySelector("#orderNo");
+        const amount = document.querySelector("#amount");
+        data.details.forEach(detail => {
+          let row = `
+          <tr>
+            <td>${detail.productId}</td>
+            <td>${detail.count}</td>
+            <td>${detail.price}</td>
+          </tr>
+          `
+          tbody.innerHTML += row;
+        });
+        orderNo.innerText = data.orderNo;
+        amount.innerText = data.amount;
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  </script>
+</body>
+
+</html>

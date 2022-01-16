@@ -24,17 +24,16 @@ const moment = require('moment');
     //try catch只要包一層就可以了
 
     let stockNo = stock;
-    let queryDate = moment().format("YYYYMMDD");
-    const response = await axios.get("https://www.twse.com.tw/exchangeReport/STOCK_DAY",
-    {
-      params:{
-        response: "json",
+    let queryDate = moment().format('YYYYMMDD');
+    const response = await axios.get('https://www.twse.com.tw/exchangeReport/STOCK_DAY', {
+      params: {
+        response: 'json',
         date: queryDate,
         stockNo,
       },
-    })
+    });
     console.log(response.data);
-  } catch {
+  } catch (err) {
     console.log(err);
   }
 })();

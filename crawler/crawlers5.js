@@ -44,7 +44,7 @@ require('dotenv').config();
       },
     });
     //console.log(response.data);
-  } catch {
+  } catch (err) {
     console.log(err);
   }
   connection.end();

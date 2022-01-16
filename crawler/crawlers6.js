@@ -13,8 +13,11 @@ require('dotenv').config();
     database: process.env.DB_NAME,
   });
   try {
+    // 根據變數去抓取資料
+    // 從 stock.txt 中讀出檔案代碼
     const stock = await readFile('stock.txt', 'utf-8');
     let stockNo = stock;
+    // 抓取股票中文名稱，順便確認股票代碼是否存在
     const queryStockName = await axios.get('https://www.twse.com.tw/zh/api/codeQuery', {
       params: {
         query: stockNo,
@@ -29,7 +32,8 @@ require('dotenv').config();
     let stockDatas = stockData.split('\t');
     let stockName = stockDatas[1];
 
-    //儲存股票代碼與名稱進資料庫 寫了IGNORE會忽視掉已經存過的
+    //儲存股票代碼與名稱進資料庫
+    //寫了IGNORE會忽視掉已經存過的
     let saveNameResult = await connection.execute('INSERT IGNORE INTO stocks (id, name) VALUES (?, ?)', [stockNo, stockName]);
     //console.log(saveNameResult);
 
@@ -58,10 +62,10 @@ require('dotenv').config();
       return data;
     });
     //把整理好的資料存進資料庫
-    // let savePriceResult = await connection
-    //   .promise()
-    //   .query('INSERT IGNORE INTO stock_prices (stock_id, date, volume, amount, open_price, high_price, low_price, close_price, delta_price, transactions) VALUES ?', [processData]);
-  } catch {
+    let savePriceResult = await connection
+      .promise()
+      .query('INSERT IGNORE INTO stock_prices (stock_id, date, volume, amount, open_price, high_price, low_price, close_price, delta_price, transactions) VALUES ?', [processData]);
+  } catch (err) {
     console.log(err);
   }
   connection.end();

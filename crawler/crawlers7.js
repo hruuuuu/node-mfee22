@@ -13,7 +13,7 @@ const connection = require('./utils/db.js'); //也可以這樣引入module直接
     //async函式return的其實是promise物件 所以要記得這邊也要await它 等著它回傳了之後 才會收得到真正要的資料
     const stockNameData = await twse.queryStockName(stockNo);
     const stockName = converter.parseStockName(stockNameData);
-    const saveStockName = await twseSaver.saveStockName(stockNo, stockName);
+    const saveStockName = await twseSaver.saveStockName(connection, stockNo, stockName);
     const queryDate = moment().format('YYYYMMDD');
     const stockPriceData = await twse.queryStockPrice(queryDate, stockNo);
     const processData = converter.convertPrice(stockPriceData, stockNo);

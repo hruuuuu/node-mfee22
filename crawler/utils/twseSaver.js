@@ -1,6 +1,6 @@
 //儲存股票代碼與名稱進資料庫
 //寫了IGNORE會忽視掉已經存過的
-async function saveStockName(stockNo, stockName) {
+async function saveStockName(connection, stockNo, stockName) {
   const saveNameResult = await connection.execute('INSERT IGNORE INTO stocks (id, name) VALUES (?, ?)', [stockNo, stockName]);
   return saveNameResult;
 }

@@ -6,8 +6,58 @@ const cors = require('cors');
 //利用express這個library來建立一個web app(express instance)
 let app = express();
 
-//使用第三方開發的CORS middleware 讓我們的server接受非同源請求
-app.use(cors());
+/* 使用第三方開發的CORS middleware 讓我們的server接受非同源請求*/
+//原本的設定 只有開啟cors 沒有限制來源等等
+//app.use(cors());
+
+app.use(
+  cors({
+    //為了要讓browser在CORS跨源請求的情況下 還是幫我們送cookie
+    //設定接受跨源存取的前端 所以是3000而不是3002(後端)
+    origin: ['http://localhost:3000'],
+
+    //credential設為true表示請browser幫我們帶cookie
+    credential: true,
+  })
+);
+
+/* express內建middleware: urlencoded */
+//用來解析req.body(post)
+//extended: false -> querystring
+//querystring 沒辦法解析巢狀物件
+//extended: true -> qs
+//qs可以解析巢狀套件 所以比較常用
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+/* 啟用session */
+//npm i express-session
+const expressSession = require('express-session');
+
+//npm i session-file-store
+//session-file-store是一個服務expression-session的套件
+let FileStore = require('session-file-store')(expressSession);
+
+app.use(
+  expressSession({
+    store: new FileStore({
+      //用來指定session要存在硬碟裡的路徑
+      //這邊寫完之後要到指定的位置去開一個sessions的資料夾
+      path: path.join(__dirname, '..', 'sessions'),
+    }),
+
+    //secret是session傳輸時用來加密的key
+    //這邊寫完之後要到.env裡去加上SESSION_SECRET
+    secret: process.env.SESSION_SECRET,
+
+    //resave設成true 表示不管session有沒有改內容 都希望重新儲存一次
+    //因為這邊是要用session-file-store存在硬碟 所以設成false
+    resave: false,
+
+    //saveUninitialized設成true 表示不管有沒有要寫入session 後端都會發給一個session id
+    saveUninitialized: false,
+  })
+);
 
 /* 設定視圖樣板 */
 //設定視圖樣板要放在哪個資料夾
@@ -15,7 +65,7 @@ app.set('views', path.join(__dirname, 'views'));
 //設定視圖引擎是pug
 app.set('view engine', 'pug');
 
-/* express內建middleware */
+/* express內建middleware: static */
 //assets裡面放靜態檔案 ex: 圖片, js, css...
 //app.use('/static', express.static(path.join(__dirname, 'assets')));
 //如果沒有要指定router的話也可以這樣寫
@@ -70,6 +120,9 @@ app.use('/api/stock', stockRouter);
 
 let memberRouter = require('./routers/member');
 app.use('/api/member', memberRouter);
+
+let authRouter = require('./routers/auth');
+app.use('/api/auth', authRouter);
 
 //可以在最後面放一個404 middleware 前面的router都比對不到
 app.use((req, res, next) => {

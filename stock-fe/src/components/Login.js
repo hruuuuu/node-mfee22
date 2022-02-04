@@ -1,4 +1,27 @@
+import { useState } from 'react';
+import axios from 'axios';
+import { API_URL } from '../utils/config.js';
+
 const Login = () => {
+  const [member, setMember] = useState({
+    email: 'happy@email.com',
+    password: 'test1234',
+  });
+  const handleChange = (e) => {
+    setMember({ ...member, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let response = await axios.post(`${API_URL}/auth/login`, member, {
+        //要設定withCredentials 瀏覽器才會幫我們送cookie
+        withCredentials: true,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <form className="bg-purple-100 h-screen md:h-full md:my-20 md:mx-16 lg:mx-28 xl:mx-40 py-16 md:py-8 px-24 text-gray-800 md:shadow md:rounded flex flex-col md:justify-center">
       <h2 className="flex justify-center text-3xl mb-6 border-b-2 pb-2 border-gray-300">
@@ -13,6 +36,8 @@ const Login = () => {
           type="text"
           id="email"
           name="email"
+          value={member.email}
+          onChange={handleChange}
         />
       </div>
       <div className="mb-8 text-2xl">
@@ -24,9 +49,14 @@ const Login = () => {
           type="password"
           id="password"
           name="password"
+          value={member.password}
+          onChange={handleChange}
         />
       </div>
-      <button className="text-xl bg-indigo-300 px-4 py-2.5 rounded hover:bg-indigo-400 transition duration-200 ease-in">
+      <button
+        className="text-xl bg-indigo-300 px-4 py-2.5 rounded hover:bg-indigo-400 transition duration-200 ease-in"
+        onClick={handleSubmit}
+      >
         登入
       </button>
     </form>

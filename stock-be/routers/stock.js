@@ -1,7 +1,9 @@
+//stock-be/routers/stock.js
+
 //stock的router 本來的app.get改成router.get 並把router共通的地方拿去server.js裡stockRouter的地方
 const express = require('express');
 const router = express.Router();
-const stockController = require('../controller/stock');
+const stockController = require('../controllers/stock');
 
 //RESTful API列表
 //建議加一個api的router 比較不會跟前端的router打架

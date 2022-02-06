@@ -15,9 +15,8 @@ app.use(
     //為了要讓browser在CORS跨源請求的情況下 還是幫我們送cookie
     //設定接受跨源存取的前端 所以是3000而不是3002(後端)
     origin: ['http://localhost:3000'],
-
     //credential設為true表示請browser幫我們帶cookie
-    credential: true,
+    credentials: true,
   })
 );
 

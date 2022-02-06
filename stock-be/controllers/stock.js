@@ -1,8 +1,10 @@
-//controller負責商業邏輯
+//controllers/stock
+//controllers負責商業邏輯
 const stockModel = require('../models/stock');
 
 const getAll = async (req, res, next) => {
-  stockModal.getAll();
+  let data = await stockModel.getAll();
+  res.json(data);
 };
 
 const getPriceByCode = async (req, res, next) => {
@@ -15,23 +17,16 @@ const getPriceByCode = async (req, res, next) => {
   );
   const total = count.length;
   */
-  let [total] = await connection.execute(
-    'SELECT COUNT(*) AS total FROM stock_prices WHERE stock_id = ?',
-    [stockId]
-  );
-  total = total[0].total;
+  const total = await stockModel.countByCode(stockId);
   const perPage = 3;
   const lastPage = Math.ceil(total / perPage);
   //計算SQL要用的offset
   const offset = perPage * (page - 1);
-  const [data, fields] = await connection.execute(
-    'SELECT * FROM stock_prices WHERE stock_id = ? ORDER BY date LIMIT ?, ?',
-    [stockId, offset, perPage]
-  );
+  let data = await stockModel.getPriceByCode(stockId, offset, perPage);
   res.json({
     pagination: { total, perPage, page, lastPage },
     data,
   });
 };
 
-module.exports = router;
+module.exports = { getAll, getPriceByCode };

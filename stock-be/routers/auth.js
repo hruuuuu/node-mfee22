@@ -156,4 +156,11 @@ router.post('/login', async (req, res, next) => {
   });
 });
 
+router.get('/logout', async (req, res, next) => {
+  //把session.member清除
+  req.session.member = null;
+  //直接回傳status code
+  res.sendStatus(202);
+});
+
 module.exports = router;

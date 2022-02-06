@@ -70,6 +70,8 @@ app.set('view engine', 'pug');
 //如果沒有要指定router的話也可以這樣寫
 app.use(express.static(path.join(__dirname, 'assets')));
 
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
 /* 自己開發的middleware */
 app.use((req, res, next) => {
   let current = new Date();
